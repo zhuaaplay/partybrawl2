@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Party Brawl</title>
+  <meta name="description" content="Party Brawl - The ultimate party fighting game" />
+  <meta name="theme-color" content="#000000" />
+
+  <!-- PWA Manifest -->
+  <link rel="manifest" href="manifest.json" />
+
+  <!-- Apple PWA support -->
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  <meta name="apple-mobile-web-app-title" content="Party Brawl" />
+  <link rel="apple-touch-icon" href="icon-192.png" />
+
+  <!-- Favicon fallback (inline SVG as data URI) -->
+  <link rel="icon" type="image/svg+xml" href="icon.svg" />
+
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Noto+Sans:wght@300;400&display=swap');
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --bg: #000000;
+      --text: #ffffff;
+      --accent: #ff2d55;
+      --dim: #333333;
+    }
+
+    html, body {
+      height: 100%;
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Noto Sans', sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .center {
+      text-align: center;
+      user-select: none;
+    }
+
+    .hello {
+      font-family: 'Black Han Sans', sans-serif;
+      font-size: clamp(0.75rem, 2vw, 1rem);
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--text);
+      opacity: 0;
+      animation: fadeIn 1.2s ease forwards 0.4s;
+    }
+
+    @keyframes fadeIn {
+      to { opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+  <div class="center">
+    <p class="hello">Hello World</p>
+  </div>
+
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('sw.js');
+      });
+    }
+  </script>
+</body>
+  </html>
+  
