@@ -2,80 +2,116 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
   <title>Party Brawl</title>
   <meta name="description" content="Party Brawl - The ultimate party fighting game" />
   <meta name="theme-color" content="#000000" />
 
-  <!-- PWA Manifest -->
+  <!-- PWA -->
   <link rel="manifest" href="manifest.json" />
-
-  <!-- Apple PWA support -->
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   <meta name="apple-mobile-web-app-title" content="Party Brawl" />
-  <link rel="apple-touch-icon" href="assets/icon/icon-192.png" />
-
-  <!-- Favicon fallback (inline SVG as data URI) -->
-  <link rel="icon" type="image/svg+xml" href="assets/icon/icon.svg" />
+  <link rel="apple-touch-icon" href="icon/icon-192.png" />
+  <link rel="icon" type="image/png" href="icon/icon-192.png" />
 
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Noto+Sans:wght@300;400&display=swap');
 
-    *, *::before, *::after {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-    :root {
-      --bg: #000000;
-      --text: #ffffff;
-      --accent: #ff2d55;
-      --dim: #333333;
-    }
+    :root { --bg: #000000; --text: #ffffff; --accent: #ff2d55; }
 
     html, body {
-      height: 100%;
-      background: var(--bg);
-      color: var(--text);
+      height: 100%; width: 100%;
+      background: var(--bg); color: var(--text);
       font-family: 'Noto Sans', sans-serif;
-      display: flex;
-      align-items: center;
-      justify-content: center;
       overflow: hidden;
     }
 
-    .center {
-      text-align: center;
-      user-select: none;
+    /* SPLASHSCREEN */
+    #splash {
+      position: fixed; inset: 0; z-index: 9999;
+      background: #000;
+      display: flex; align-items: center; justify-content: center;
+      transition: opacity 0.5s ease;
+    }
+    #splash img { width: 100%; height: 100%; object-fit: cover; }
+    #splash.hide { opacity: 0; pointer-events: none; }
+
+    /* LANDSCAPE WARNING */
+    #landscape-warn {
+      display: none; position: fixed; inset: 0; z-index: 8888;
+      background: #000;
+      flex-direction: column; align-items: center; justify-content: center;
+      gap: 16px; text-align: center; padding: 24px;
+    }
+    #landscape-warn .rotate-icon {
+      font-size: 3rem;
+      animation: rotateAnim 1.5s ease-in-out infinite;
+    }
+    #landscape-warn p { font-size: 0.85rem; color: #aaa; letter-spacing: 0.05em; }
+    @keyframes rotateAnim {
+      0%   { transform: rotate(0deg); }
+      50%  { transform: rotate(-90deg); }
+      100% { transform: rotate(0deg); }
     }
 
+    /* MAIN CONTENT */
+    #app {
+      display: flex; align-items: center; justify-content: center;
+      height: 100%; width: 100%;
+    }
     .hello {
       font-family: 'Black Han Sans', sans-serif;
-      font-size: clamp(0.75rem, 2vw, 1rem);
-      letter-spacing: 0.25em;
-      text-transform: uppercase;
-      color: var(--text);
-      opacity: 0;
-      animation: fadeIn 1.2s ease forwards 0.4s;
+      font-size: clamp(0.7rem, 2vw, 0.95rem);
+      letter-spacing: 0.25em; text-transform: uppercase;
+      color: var(--text); opacity: 0;
+      animation: fadeIn 1s ease forwards 0.3s;
     }
+    @keyframes fadeIn { to { opacity: 1; } }
 
-    @keyframes fadeIn {
-      to { opacity: 1; }
+    /* ORIENTATION */
+    @media (orientation: landscape) {
+      #landscape-warn { display: flex; }
+      #app { display: none; }
+    }
+    @media (orientation: portrait) {
+      #landscape-warn { display: none; }
+      #app { display: flex; }
     }
   </style>
 </head>
 <body>
-  <div class="center">
+
+  <div id="splash">
+    <img src="assets/splash/loadingscreen.png" alt="Loading..." />
+  </div>
+
+  <div id="landscape-warn">
+    <div class="rotate-icon">📱</div>
+    <p>Putar perangkat ke mode potrait</p>
+  </div>
+
+  <div id="app">
     <p class="hello">Hello World</p>
   </div>
 
   <script>
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+        const splash = document.getElementById('splash');
+        splash.classList.add('hide');
+        setTimeout(() => splash.remove(), 500);
+      }, 2500);
+    });
+
     if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('sw.js');
-      });
+      navigator.serviceWorker.register('sw.js');
+    }
+
+    if (screen.orientation && screen.orientation.lock) {
+      screen.orientation.lock('portrait').catch(() => {});
     }
   </script>
 </body>
